@@ -1,0 +1,24 @@
+.timer-item {
+  padding: 20px;
+  text-align: center;
+  border: 1px solid gray;
+  width: 300px;
+  border-radius: 10px;
+  color: gray;
+
+  .timer-time {
+    font-size: 30pt;
+    font-weight: bold;
+  }
+
+  &.expiring {
+      color: #a83f3f;
+      border-color: #a83f3f;
+  }
+
+  &.expired {
+      .timer-time {
+        font-size: 20pt;
+      }
+  }
+}

@@ -18,6 +18,18 @@ class App extends Component {
         if (!timers || !timers.length || timers.length < 1) {
             timers = [
                 {
+                    name: 'Test 1',
+                    duration: 0.5
+                },
+                {
+                    name: 'Test 2',
+                    duration: 1
+                },
+                {
+                    name: 'Test 3',
+                    duration: 3
+                },
+                {
                     name: 'Spider',
                     duration: 30
                 },

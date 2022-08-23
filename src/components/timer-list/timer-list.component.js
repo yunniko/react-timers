@@ -12,7 +12,7 @@ class TimerList extends Component {
               {
                   timers.map((timer) => {
                       const { id } = timer;
-                      return <Timer timer={timer} key={id} onStart={onStart} onReset={onReset}></Timer>
+                      return <Timer className={"timer-item"} timer={timer} key={id} onStart={onStart} onReset={onReset}></Timer>
                   })
               }
           </div>

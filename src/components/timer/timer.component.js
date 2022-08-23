@@ -1,4 +1,5 @@
 import { Component } from "react";
+import "./timer.style.scss";
 
 class Timer extends Component {
     getNiceTime(ts) {
@@ -14,31 +15,33 @@ class Timer extends Component {
     }
     
     render() {
-        const { timer, onStart, onReset } = this.props;
+        const { timer, onStart, onReset, className } = this.props;
         const { id, name, duration, start, timeleft } = timer;
         const { getNiceTime } = this;
+        const isExpiring = start > 0 && timeleft > 0 && timeleft < 60;
+        const isExpired = start > 0 && timeleft <= 0;
+        const timerTimeClassName = 'timerTime';
         let content;
         if (start === 0) {
             content = <div>
-                <p>Duration {getNiceTime(duration)}</p>
-                <button data-id={id} onClick={onStart}>Start</button>
+                <p className={timerTimeClassName}>{getNiceTime(duration)}</p>
+                <button className={'timer-control timer-start'} data-id={id} onClick={onStart}>Start</button>
             </div>
         } else {
             let timerText;
             if (timeleft > 0) {
-                timerText = <p>{getNiceTime(timeleft)} left</p>
+                timerText = <p className={timerTimeClassName}>{getNiceTime(timeleft)}</p>
             } else {
-                timerText = <p>Expired {getNiceTime(Math.abs(timeleft))} ago</p>
+                timerText = <p className={timerTimeClassName}>Expired {getNiceTime(Math.abs(timeleft))} ago</p>
             }
             content = <div>
                 {timerText}
-                <button data-id={id} onClick={onReset}>Reset</button>
+                <button className={'timer-control timer-reset'} data-id={id} onClick={onReset}>Reset</button>
             </div>
         }
         
-        return <div>
+        return <div className={className + (isExpiring ? ' expiring' : '') + (isExpired ? ' expired' : '')}>
             <h1>{name}</h1>
-            
             {content}
         </div>
     }
