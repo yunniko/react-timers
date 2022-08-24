@@ -18,9 +18,9 @@ class Timer extends Component {
         const { timer, onStart, onReset, className } = this.props;
         const { id, name, duration, start, timeleft } = timer;
         const { getNiceTime } = this;
-        const isExpiring = start > 0 && timeleft > 0 && timeleft < 60;
+        const isExpiring = start > 0 && timeleft > 0 && timeleft < 60000;
         const isExpired = start > 0 && timeleft <= 0;
-        const timerTimeClassName = 'timerTime';
+        const timerTimeClassName = 'timer-time';
         let content;
         if (start === 0) {
             content = <div>
@@ -30,17 +30,21 @@ class Timer extends Component {
         } else {
             let timerText;
             if (timeleft > 0) {
-                timerText = <p className={timerTimeClassName}>{getNiceTime(timeleft)}</p>
+                content = <div>
+                    <p className={timerTimeClassName}>{getNiceTime(timeleft)}</p>
+                    <button className={'timer-control timer-reset'} data-id={id} onClick={onReset}>Reset</button>
+                </div>
             } else {
-                timerText = <p className={timerTimeClassName}>Expired {getNiceTime(Math.abs(timeleft))} ago</p>
+                content = <div>
+                    <p className={timerTimeClassName}>Expired {getNiceTime(Math.abs(timeleft))} ago</p>
+                    <button className={'timer-control timer-reset'} data-id={id} onClick={onReset}>Reset</button>
+                    <button className={'timer-control timer-start'} data-id={id} onClick={onStart}>Restart</button>
+                </div>
             }
-            content = <div>
-                {timerText}
-                <button className={'timer-control timer-reset'} data-id={id} onClick={onReset}>Reset</button>
-            </div>
+            
         }
         
-        return <div className={className + (isExpiring ? ' expiring' : '') + (isExpired ? ' expired' : '')}>
+        return <div className={className + (isExpiring ? ' expiring' : '') + (isExpired ? ' expired' : '') + (!isExpired && !isExpiring && start > 0 ? ' active' : '')}>
             <h1>{name}</h1>
             {content}
         </div>

@@ -1,24 +1,86 @@
+@import '../../variables';
+
 .timer-item {
-  padding: 20px;
+  padding: 10px 20px 30px 20px;
   text-align: center;
-  border: 1px solid gray;
-  width: 300px;
-  border-radius: 10px;
-  color: gray;
+  border: 1px solid darken($backgroundColor, 10);
+  background-color: lighten($backgroundColor, 10);
+  border-radius: 20px;
+  color: $textColor;
+
+  h1 {
+    font-size: 30pt;
+    font-weight: lighter;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 
   .timer-time {
-    font-size: 30pt;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    line-height: 30pt;
+    font-size: 28pt;
     font-weight: bold;
+    color: lighten($textColor, 10);
+  }
+  .timer-control {
+    margin: 5px;
+    padding: 10px;
+    outline:none;
+    border-radius: 4px;
+    font-weight: bolder;
+    width: 80px;
+    color: $textColorLight;
+
+    &.timer-start {
+      border: 1px solid darken($primaryColor, 10);
+      background-color: $primaryColor;
+
+      &:hover {
+        background-color: $textColorLight;
+        color: darken($primaryColor, 10);
+      }
+
+      &:active {
+        background-color: darken($primaryColor, 10);
+        color: $textColorLight;
+      }
+    }
+    &.timer-reset {
+      border: 1px solid darken($primaryColor2, 10);
+      background-color: $primaryColor2;
+
+      &:hover {
+        background-color: $textColorLight;
+        color: darken($primaryColor2, 10);
+      }
+
+      &:active {
+        background-color: darken($primaryColor2, 10);
+        color: $textColorLight;
+      }
+    }
+
   }
 
   &.expiring {
-      color: #a83f3f;
-      border-color: #a83f3f;
+      color: $attentionColor;
+      border-color: $attentionColor;
+    .timer-time {
+      color: $attentionColor;
+    }
   }
 
   &.expired {
+      color: lighten($textColor, 20);
       .timer-time {
-        font-size: 20pt;
+        font-size: 18pt;
+        font-weight: lighter;
       }
+  }
+
+  &.active {
+    background-color: lighten($primaryColor, 40);
+    border-color: $primaryColor;
   }
 }
