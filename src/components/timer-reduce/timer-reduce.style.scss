@@ -1,0 +1,19 @@
+.timer-reduces {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: left;
+
+  .reduce-item {
+    display: inline-block;
+    margin: 10px;
+
+    flex-grow: 1;
+    flex-basis: 300px;
+
+    label {
+      margin-left: 10px;
+      font-weight: lighter;
+      font-size: 14pt;
+    }
+  }
+}
