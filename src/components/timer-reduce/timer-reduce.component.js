@@ -10,9 +10,9 @@ class TimerReduce extends Component {
           <div className={'timer-reduces'}>
               {
                   reduces.map((reduce) => {
-                      const { id } = reduce;
+                      const { id, on } = reduce;
                       return <div key={id} className={'reduce-item'}>
-                          <input type={"checkbox"} data-id={ id } onChange={ onChange } id={'reduce-' + id}/>
+                          <input type={"checkbox"} data-id={ id } onChange={ onChange } id={'reduce-' + id} checked={ on ? 'checked' : ''}/>
                           <label htmlFor={'reduce-' + id}>Reduce time for { id }%</label>
                       </div>
                   })
