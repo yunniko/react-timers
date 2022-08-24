@@ -138,12 +138,15 @@ class TimersPage extends Component {
     }
     getReducedDuration(duration, reduces) {
         let reducePercent = 0;
-        reduces.forEach((item) => {
-            if (item.on) {
-                reducePercent += item.id;
-            }
-        })
-        return duration * ((100 - reducePercent) / 100);
+        if (reduces) {
+            reduces.forEach((item) => {
+                if (item.on) {
+                    reducePercent += item.id;
+                }
+            })
+            return duration * ((100 - reducePercent) / 100);
+        }
+        return duration;
     }
     
     componentDidMount() {
