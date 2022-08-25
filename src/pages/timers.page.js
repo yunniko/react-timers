@@ -3,9 +3,11 @@ import TimerList from "../components/timer-list/timer-list.component";
 import TimerReduce from "../components/timer-reduce/timer-reduce.component";
 
 class TimersPage extends Component {
+    timers = [];
     constructor(props) {
         super(props);
         
+        this.timers = this.getTimers();
         this.state = this.getSavedState();
         console.log(this.state);
     }
@@ -52,13 +54,10 @@ class TimersPage extends Component {
         timers.forEach((timer, index) => {
             timer.id = timer.id ?? index;
             timer.duration *= 60000;
-            timer.start = timer.start ?? 0;
-            timer.timeleft = timer.timeleft ?? this.timeleft(timer.start, timer.duration);
         })
         return timers;
     }
     saveState(state) {
-        console.log(state);
         window.localStorage.setItem("state", JSON.stringify(state));
     }
     getSavedState() {
@@ -67,14 +66,10 @@ class TimersPage extends Component {
             state = JSON.parse(state);
         } else {
             state = {
-                timers: this.getTimers(),
+                starts: [],
                 reduces: this.getReduces()
             }
         }
-
-        state.timers.forEach((timer, index) => {
-            timer.timeleft = this.timeleft(timer.start, timer.duration, state.reduces);
-        })
         return state;
     }
     
@@ -86,50 +81,47 @@ class TimersPage extends Component {
     }
     
     changeStartTimerState = (id, value) => {
-        const { timeleft } = this;
-        const { timers, reduces } = this.state;
-        const newTimers = [...timers];
-        newTimers.forEach((timer) => {
-            if (timer.id.toString() === id.toString()) {
-                timer.start = value
-                timer.timeleft = timeleft(value, timer.duration, reduces);
-            }
-        });
+        const { starts } = this.state;
+        let newStarts = starts.filter((start) => {
+            return start.id !== id;
+        }) || [];
+        if (value !== 0) {
+            newStarts.push({
+                id: id,
+                start: value
+            })
+        }
         this.setState({
-            timers: newTimers
+            starts: newStarts
+        }, () => {
+            this.saveState(this.state);
         });
-        this.saveState(this.state);
+        
     }
     
     changeReduce(id, value) {
-        const { timers, reduces } = this.state;
-        const { timeleft } = this;
+        const { reduces } = this.state;
         const newReduces = [...reduces];
-        const newTimers = [...timers];
         newReduces.forEach((reduce) => {
             if (reduce.id.toString() === id.toString()) {
                 reduce.on = !!value;
             }
         });
-        newTimers.forEach((timer) => {
-            if (timer.start > 0) {
-                timer.timeleft = timeleft(timer.start, timer.duration, newReduces);
-            }
-        });
         this.setState({
-            reduces: newReduces,
-            timers: newTimers
+            reduces: newReduces
+        }, () => {
+            this.saveState(this.state);
         });
-        this.saveState(this.state);
+        
     }
     
     onStart = (e) => {
-        const id = e.target.getAttribute('data-id');
+        const id = parseInt(e.target.getAttribute('data-id'));
         this.changeStartTimerState(id, Date.now());
     }
     
     onReset = (e) => {
-        const id = e.target.getAttribute('data-id');
+        const id = parseInt(e.target.getAttribute('data-id'));
         this.changeStartTimerState(id, 0);
     }
     onReduceChange = (e) => {
@@ -151,35 +143,33 @@ class TimersPage extends Component {
     
     componentDidMount() {
         setInterval(() => {
-            const { timers, reduces } = this.state;
-            const { timeleft } = this;
-            const newTimers = [...timers];
-            newTimers.forEach((timer) => {
-                if (timer.start > 0) {
-                    timer.timeleft = timeleft(timer.start, timer.duration, reduces);
-                }
-            });
-            this.setState({
-                timers: newTimers
-            });
+            const { starts } = this.state;
+            if (starts.length > 0) {
+                this.setState(this.state);
+            }
         }, 1000);
     }
     
     render() {
-        const { timers, reduces } = this.state;
-        const { onStart, onReset, onReduceChange, getReducedDuration } = this;
-        const timersWithReduce = [];
-        timers.forEach((item) => {
-            const newItem = {...item};
-            newItem.duration = getReducedDuration(item.duration, reduces);
-            timersWithReduce.push(newItem);
+        const { starts, reduces } = this.state;
+        const { timers,onStart, onReset, onReduceChange, getReducedDuration, timeleft } = this;
+        const timersForRender = [];
+        timers.forEach((timer) => {
+            const newTimer = {...timer};
+            const startForTimer = starts.find((start) => {
+                return start.id === timer.id;
+            })
+            newTimer.start = startForTimer?.start || 0;
+            newTimer.duration = getReducedDuration(timer.duration, reduces);
+            newTimer.timeleft = timeleft(newTimer.start, newTimer.duration, reduces);
+            timersForRender.push(newTimer);
         })
+        console.log(timersForRender);
         return (
           <div>
               <TimerReduce reduces={reduces} onChange={onReduceChange} />
-              <TimerList timers={timersWithReduce} onStart={onStart} onReset={onReset} />
+              <TimerList timers={timersForRender} onStart={onStart} onReset={onReset} />
           </div>
-          
         )
     }
 }
