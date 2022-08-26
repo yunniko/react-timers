@@ -1,0 +1,49 @@
+@import '../../styles/variables';
+.menu-container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  background-color: $primaryColor2;
+  border-bottom: 11px solid $primaryColor;
+
+  .menu-item {
+    display: inline-block;
+    padding: 10px;
+
+    flex-basis: 80px;
+
+    outline:none;
+    text-decoration: none;
+    text-align: center;
+    font-weight: normal;
+    width: 80px;
+
+    &.menu-link {
+      color: $textColorLight;
+      &:hover {
+        background-color: $textColorLight;
+        color: darken($primaryColor2, 10);
+      }
+      &:active {
+        background-color: darken($primaryColor2, 10);
+        color: $textColorLight;
+      }
+      &.active {
+        background-color: $primaryColor;
+        color: $textColorLight;
+        border-top: 5px dashed $primaryColor2;
+      }
+    }
+    &.menu-logo {
+      font-weight: bolder;
+      color: $textColorLight;
+      background-color: $primaryColor2;
+    }
+
+    &.menu-additional {
+      align-self: flex-end;
+    }
+
+
+  }
+}
