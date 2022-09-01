@@ -1,6 +1,6 @@
 import { Component } from "react";
-import TimerList from "../components/timer-list/timer-list.component";
-import TimerReduce from "../components/timer-reduce/timer-reduce.component";
+import TimerList from "../../components/timer-list/timer-list.component";
+import TimerReduce from "../../components/timer-reduce/timer-reduce.component";
 
 class TimersPage extends Component {
     

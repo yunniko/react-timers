@@ -3,26 +3,24 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
-  background-color: $primaryColor2;
+  background-color: $textColorLight;
   border-bottom: 11px solid $primaryColor;
 
   .menu-item {
-    display: inline-block;
-    padding: 10px;
+    padding: 20px;
 
-    flex-basis: 80px;
+    flex-basis: 100px;
 
     outline:none;
     text-decoration: none;
     text-align: center;
     font-weight: normal;
-    width: 80px;
 
     &.menu-link {
-      color: $textColorLight;
+      color: $primaryColor2;
       &:hover {
-        background-color: $textColorLight;
-        color: darken($primaryColor2, 10);
+        background-color: $primaryColor2;
+        color: $textColorLight;
       }
       &:active {
         background-color: darken($primaryColor2, 10);
@@ -36,8 +34,12 @@
     }
     &.menu-logo {
       font-weight: bolder;
-      color: $textColorLight;
-      background-color: $primaryColor2;
+      color: $primaryColor2;
+      background-color: $textColorLight;
+      padding: 2px;
+      img {
+        height: 50px;
+      }
     }
 
     &.menu-additional {
