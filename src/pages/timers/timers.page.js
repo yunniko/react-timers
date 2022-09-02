@@ -206,9 +206,7 @@ class TimersPage extends Component {
      * @returns {number}
      */
     timeleft = (start, duration) => {
-        const { getReducedDuration } = this;
         const now = Date.now();
-        duration = getReducedDuration(duration);
         return duration - (now - start);
     }
     
