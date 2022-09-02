@@ -1,19 +1,38 @@
+@import '../../styles/variables';
 .timer-reduces {
   display: flex;
   flex-flow: row wrap;
-  justify-content: left;
+  justify-content: center;
 
   .reduce-item {
-    display: inline-block;
+    display: block;
     margin: 10px;
+    font-weight: lighter;
+    font-size: 14pt;
+    .reduce-display-value {
+      border: 1px solid lighten($primaryColor2, 10);
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 16pt;
+    }
+    .reduce-control {
+      font-size: 16pt;
+      font-weight: bold;
+      min-width: 20px;
+      padding: 10px;
 
-    flex-grow: 1;
-    flex-basis: 300px;
-
-    label {
-      margin-left: 10px;
-      font-weight: lighter;
-      font-size: 14pt;
+      &.disabled {
+        background-color: lighten($primaryColor2, 40);
+        border-color: lighten($primaryColor2, 30);
+        &:hover {
+          color: $textColorLight;
+          background-color: lighten($primaryColor2, 40);
+        }
+        &:active {
+          color: $textColorLight;
+          background-color: lighten($primaryColor2, 40);
+        }
+      }
     }
   }
 }

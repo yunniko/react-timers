@@ -1,6 +1,7 @@
 import { Component } from "react";
 import TimerList from "../../components/timer-list/timer-list.component";
 import TimerReduce from "../../components/timer-reduce/timer-reduce.component";
+import "./timers-page.style.scss"
 
 class TimersPage extends Component {
     
@@ -9,21 +10,14 @@ class TimersPage extends Component {
         
         this.state = this.getSavedState();
         this.timers = this.getTimers();
-        this.reduces = this.getReduces();
+        this.timersNoReduce = this.getTimersNoReduce();
     }
     
     // init
     
     timers = [];
-    reduces = [];
-    
-    /**
-     * Hardcoded reduces list
-     * @returns {number[]}
-     */
-    getReduces() {
-        return [3,15];
-    }
+    timersNoReduce = [];
+    reduce = 0;
     
     /**
      * Hardcoded timers list
@@ -63,6 +57,19 @@ class TimersPage extends Component {
         })
         return timers;
     }
+    /**
+     * Hardcoded timers list
+     * @returns {[{duration: number, name: string},{duration: number, name: string},{duration: number, name: string},{duration: number, name: string},{duration: number, name: string},null]}
+     */
+    getTimersNoReduce() {
+        const timers = [];
+        
+        timers.forEach((timer, index) => {
+            timer.id = timer.id ?? (index + 100) ;
+            timer.duration *= 60000;
+        })
+        return timers;
+    }
 
     //state operations. TODO: make storage saver
     /**
@@ -80,7 +87,7 @@ class TimersPage extends Component {
         let state = window.localStorage.getItem("state");
         const initialState = {
             starts: [],
-            reducesOn: []
+            reduce: 0
         }
         if (state) {
             state = JSON.parse(state);
@@ -105,10 +112,6 @@ class TimersPage extends Component {
     onReset = (e) => {
         const id = parseInt(e.target.getAttribute('data-id'));
         this.changeStartTimerState(id, 0);
-    }
-    onReduceChange = (e) => {
-        const id = e.target.getAttribute('data-id');
-        this.changeReduce(id, e.target.checked);
     }
     
     // event handlers helpers
@@ -141,19 +144,12 @@ class TimersPage extends Component {
      * @param id
      * @param value
      */
-    changeReduce(id, value) {
-        const { reducesOn } = this.state;
-        let newReduces = [];
-        reducesOn.forEach((reduce) => {
-            if (reduce.toString() !== id.toString()) {
-                newReduces.push(reduce);
-            }
-        });
-        if (value) {
-            newReduces.push(parseInt(id));
+    changeReduce = (value) => {
+        if (!value) {
+            value = '0';
         }
         this.setState({
-            reducesOn: newReduces
+            reduce: parseInt(value)
         }, () => {
             this.saveState(this.state);
         });
@@ -180,20 +176,26 @@ class TimersPage extends Component {
         })
         return timersForRender;
     }
+    
+    // data for render
     /**
      * @returns {*[]}
      */
-    getReducesForRender = () => {
-        const { reducesOn } = this.state;
-        const { reduces } = this;
-        const result = [];
-        reduces.forEach((id) => {
-            result.push({
-                id: id,
-                on: reducesOn.includes(id)
+    getNoReducedTimersForRender = () => {
+        const { starts } = this.state;
+        const { timersNoReduce, timeleft } = this;
+        const timersForRender = [];
+        timersNoReduce.forEach((timer) => {
+            const newTimer = {...timer};
+            const startForTimer = starts.find((start) => {
+                return start.id === timer.id;
             })
-        });
-        return result;
+            newTimer.start = startForTimer?.start || 0;
+            newTimer.duration = timer.duration;
+            newTimer.timeleft = timeleft(newTimer.start, newTimer.duration);
+            timersForRender.push(newTimer);
+        })
+        return timersForRender;
     }
     
     //helpers
@@ -216,25 +218,11 @@ class TimersPage extends Component {
      * @returns {number|*}
      */
     getReducedDuration = (duration) => {
-        const { getReducePercent } = this;
-        let reducePercent = getReducePercent();
-        if (reducePercent > 0) {
-            return duration * ((100 - reducePercent) / 100);
+        const { reduce } = this.state;
+        if (reduce > 0) {
+            return duration * ((100 - reduce) / 100);
         }
         return duration;
-    }
-    
-    /**
-     *
-     * @returns {number}
-     */
-    getReducePercent = () => {
-        const { reducesOn } = this.state;
-        let result = 0;
-        reducesOn.forEach((percent) => {
-            result += percent;
-        })
-        return result;
     }
     
     //render and update
@@ -249,13 +237,16 @@ class TimersPage extends Component {
     }
     
     render() {
-        const { onStart, onReset, onReduceChange, getTimersForRender, getReducesForRender } = this;
+        const { onStart, onReset, changeReduce, getTimersForRender, getNoReducedTimersForRender } = this;
+        const { reduce } = this.state;
+        const timersNoReduceForRender = getNoReducedTimersForRender();
         const timersForRender = getTimersForRender();
-        const reducesForRender = getReducesForRender();
         return (
           <div>
-              <TimerReduce reduces={reducesForRender} onChange={onReduceChange} />
+              <TimerReduce reduce={reduce} changeReduce={changeReduce} />
               <TimerList timers={timersForRender} onStart={onStart} onReset={onReset} />
+              <hr/>
+              <TimerList timers={timersNoReduceForRender} onStart={onStart} onReset={onReset} />
           </div>
         )
     }

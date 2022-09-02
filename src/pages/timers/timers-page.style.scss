@@ -1,0 +1,9 @@
+@import '../../styles/variables';
+hr {
+  border: 1px dashed lighten($primaryColor2, 30);
+}
+.no-result {
+  font-weight: lighter;
+  text-align: center;
+  width: 100%;
+}
